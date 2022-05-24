@@ -8,7 +8,7 @@
 	display: flex;
 	justify-content: center;
 }
-.item article {
+.item form {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -100,7 +100,7 @@
 /***************/
 
 @media (max-width: 991.98px) {
-	.item article {
+	.item form {
 		width: 70%;
 	}
 	.item__content__settings__color,
@@ -115,7 +115,7 @@
 }
 
 @media (max-width: 575.98px) { 
-	.item article {
+	.item form {
 		width: 90%;
 	}
 }
