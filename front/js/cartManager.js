@@ -6,7 +6,7 @@ class CartItem {
     }
 }
 
-class Cart {
+class CartManager {
     cartArticlesNumber = 0;
     cartItemsList = [];
 
@@ -20,7 +20,7 @@ class Cart {
     }
 
     constructor () {
-        let jsonCart = Cart.getCart();
+        let jsonCart = CartManager.getCart();
         jsonCart && Object.assign(this, jsonCart);
     }
 

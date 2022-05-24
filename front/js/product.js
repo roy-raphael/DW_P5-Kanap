@@ -51,7 +51,7 @@ function listenAddToCartButton(id) {
         valid &= quantity.reportValidity();
         if (valid) {
             // Add the product(s) to the cart
-            let cart = new Cart();
+            let cart = new CartManager();
             let cartItem = new CartItem(id, colors.value, quantity.value);
             cart.add(cartItem);
             // Message to the user
