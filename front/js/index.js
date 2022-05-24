@@ -1,7 +1,7 @@
 async function getProducts() {
     let host = "http://localhost:3000";
     let response = await fetch(host + "/api/products");
-    let productsListJson = await response.json();
+    let productsListJson = response.json();
     return productsListJson;
 }
 
@@ -12,9 +12,15 @@ function displayProductsList(productsListJson) {
                                     <article>
                                     <img src="${product.imageUrl}" alt="${product.altTxt}">
                                     <h3 class="productName">${product.name}</h3>
+                                    <p class="productPrice">${(product.price/100).toLocaleString()}€</p>
                                     <p class="productDescription">${product.description}</p>
                                     </article>
                                 </a>`;
+    }
+    for (let productPriceItem of container.getElementsByClassName("productPrice"))
+    {
+        productPriceItem.style.margin = 0;
+        productPriceItem.style.fontWeight = 600;
     }
 }
 
