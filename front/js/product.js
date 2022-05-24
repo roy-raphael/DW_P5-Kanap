@@ -1,11 +1,19 @@
-async function getProduct() {
-    let host = "http://localhost:3000";
+function getID() {
     let url = new URL(window.location.href);
     let search_params = new URLSearchParams(url.search);
     if (search_params.has('id')) {
-        let response = await fetch(host + "/api/products/" + search_params.get("id"));
+        return search_params.get("id");
+    } else {
+        // LOG ERROR
+        return "";
+    }
+}
+
+async function getProduct(id) {
+    let host = "http://localhost:3000";
+    if (id != "") {
+        let response = await fetch(host + "/api/products/" + id);
         let productJson = await response.json();
-        console.log(productJson);
         return productJson;
     } else {
         // LOG ERROR
@@ -13,8 +21,7 @@ async function getProduct() {
     }
 }
 
-async function displayProduct() {
-    let productJson = await getProduct();
+function displayProduct(productJson) {
     // Image
     let imageItem = document.createElement("img");
     imageItem.setAttribute("src", productJson.imageUrl);
@@ -35,4 +42,34 @@ async function displayProduct() {
     }
 }
 
-displayProduct();
+function listenAddToCartButton(id) {
+    document.getElementById("addToCart").addEventListener('click', function(event) {
+        event.preventDefault();
+        let colors = document.getElementById("colors");
+        let quantity = document.getElementById("quantity");
+        let valid = colors.reportValidity();
+        valid &= quantity.reportValidity();
+        if (valid) {
+            // Add the product(s) to the cart
+            let cart = new Cart();
+            let cartItem = new CartItem(id, colors.value, quantity.value);
+            cart.add(cartItem);
+            // Message to the user
+            let multipleProducts = quantity.value > 1;
+            alert((multipleProducts ? "Les articles ont" : "L'article a") + " bien été ajouté" + (multipleProducts ? "s" : "") + " au panier.");
+        }
+    });
+}
+
+async function main() {
+    let id = getID();
+    if (id == "") {
+        // LOG ERROR
+        return;
+    }
+    let productJson = await getProduct(id);
+    displayProduct(productJson);
+    listenAddToCartButton(id);
+}
+
+main();
