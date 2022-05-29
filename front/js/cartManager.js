@@ -44,3 +44,14 @@ class CartManager {
         this.saveCart();
     }
 }
+
+function initCartProductsNumberIndicator() {
+    let cart = new CartManager();
+    updateCartProductsNumberIndicator(cart.cartArticlesNumber);
+}
+
+function updateCartProductsNumberIndicator(productsNumber) {
+    let navBar = document.getElementsByTagName("nav")[0];
+    let cartElement = navBar.children[0].children[1].children[0];
+    cartElement.textContent = "Panier (" + productsNumber + ")";
+}

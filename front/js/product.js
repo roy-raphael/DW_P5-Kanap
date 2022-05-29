@@ -42,6 +42,8 @@ function listenAddToCartButton(id) {
             let cart = new CartManager();
             let cartItem = new CartItem(id, colors.value, quantity.value);
             cart.add(cartItem);
+            // Update the indicator
+            updateCartProductsNumberIndicator(cart.cartArticlesNumber);
             // Message to the user
             let multipleProducts = quantity.value > 1;
             alert((multipleProducts ? "Les articles ont" : "L'article a") + " bien été ajouté" + (multipleProducts ? "s" : "") + " au panier.");
@@ -50,6 +52,7 @@ function listenAddToCartButton(id) {
 }
 
 async function main() {
+    initCartProductsNumberIndicator();
     let id = getID();
     if (id == "") {
         // LOG ERROR

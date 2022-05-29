@@ -34,6 +34,7 @@ async function displayCart(cart) {
 
 async function main() {
     let cart = new CartManager();
+    updateCartProductsNumberIndicator(cart.cartArticlesNumber);
     displayCart(cart);
 }
 

@@ -29,4 +29,5 @@ async function displayProducts() {
     displayProductsList(productsListJson);
 }
 
+initCartProductsNumberIndicator();
 displayProducts();
