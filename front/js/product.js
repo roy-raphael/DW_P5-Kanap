@@ -9,18 +9,6 @@ function getID() {
     }
 }
 
-async function getProduct(id) {
-    let host = "http://localhost:3000";
-    if (id != "") {
-        let response = await fetch(host + "/api/products/" + id);
-        let productJson = await response.json();
-        return productJson;
-    } else {
-        // LOG ERROR
-        return {};
-    }
-}
-
 function displayProduct(productJson) {
     // Image
     let imageItem = document.createElement("img");
