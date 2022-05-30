@@ -1,3 +1,6 @@
+import {getProduct} from './productManager.js';
+import {CartItem, CartManager, initCartProductsNumberIndicator, updateCartProductsNumberIndicator} from './cartManager.js';
+
 function getID() {
     let url = new URL(window.location.href);
     let search_params = new URLSearchParams(url.search);

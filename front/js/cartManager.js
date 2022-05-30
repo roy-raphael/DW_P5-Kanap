@@ -1,4 +1,4 @@
-class CartItem {
+export class CartItem {
     constructor (id, color, quantity) {
         this.id = id;
         this.color = color;
@@ -6,7 +6,7 @@ class CartItem {
     }
 }
 
-class CartManager {
+export class CartManager {
     cartArticlesNumber = 0;
     cartItemsList = [];
 
@@ -45,12 +45,12 @@ class CartManager {
     }
 }
 
-function initCartProductsNumberIndicator() {
+export function initCartProductsNumberIndicator() {
     let cart = new CartManager();
     updateCartProductsNumberIndicator(cart.cartArticlesNumber);
 }
 
-function updateCartProductsNumberIndicator(productsNumber) {
+export function updateCartProductsNumberIndicator(productsNumber) {
     let navBar = document.getElementsByTagName("nav")[0];
     let cartElement = navBar.children[0].children[1].children[0];
     cartElement.textContent = "Panier (" + productsNumber + ")";

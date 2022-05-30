@@ -1,3 +1,6 @@
+import {getProduct} from './productManager.js';
+import {CartManager, updateCartProductsNumberIndicator} from './cartManager.js';
+
 // Afficher un tableau récapitulatif des achats dans la page Panier
 
 function displayCartItem(cartItem, productJson) {

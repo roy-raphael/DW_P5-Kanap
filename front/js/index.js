@@ -1,3 +1,5 @@
+import {initCartProductsNumberIndicator} from './cartManager.js';
+
 async function getProducts() {
     let host = "http://localhost:3000";
     let response = await fetch(host + "/api/products");
