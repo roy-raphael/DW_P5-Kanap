@@ -29,10 +29,14 @@ function displayCartItem(cartItem, productJson) {
 }
 
 async function displayCart(cart) {
+    let totalPriceCents = 0;
     for (let cartItem of cart.cartItemsList) {
         let productJson = await getProduct(cartItem.id);
         displayCartItem(cartItem, productJson);
+        totalPriceCents += productJson.price * cartItem.quantity;
     }
+    document.getElementById("totalQuantity").textContent = cart.cartArticlesNumber;
+    document.getElementById("totalPrice").textContent = (totalPriceCents/100).toLocaleString();
 }
 
 async function main() {
