@@ -105,6 +105,73 @@ function listenSpinnerInputs() {
     }
 }
 
+// Order the cart
+async function order(firstName, lastName, address, city, email) {
+    // Objet contact : firstName, lastName, address, city et email
+    let contact = {firstName: firstName,
+        lastName: lastName,
+        address: address,
+        city: city,
+        email: email};
+
+    // Tableau produits : array de strings product-ID
+    let products = [];
+    let cart = CartManager.getInstance();
+    for (let i = 0; i < cart.cartItemsListSize(); i++) {
+        let cartItem = cart.getCartItem(i);
+        products.push(cartItem.id);
+    }
+    
+    // POST /order <objet contact> <tableau produits>
+    let host = "http://localhost:3000";
+    let response = await fetch(host + "/api/products/order", {
+        method: "POST",
+        headers: {
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json'
+        },
+        body: `{"contact": ${JSON.stringify(contact)},
+    "products": ${JSON.stringify(products)}}`
+    });
+    // return <objet contact> <tableau produits> <orderId (string)>
+    let responseJson = await response.json();
+}
+
+// Add event listener on the order button
+function listenOrderButton(id) {
+    document.getElementById("order").addEventListener('click', async function(event) {
+        event.preventDefault();
+        let firstName = document.getElementById("firstName");
+        let lastName = document.getElementById("lastName");
+        let address = document.getElementById("address");
+        let city = document.getElementById("city");
+        let email = document.getElementById("email");
+        let valid = true;
+        let nameErrorMsg = "Veuillez modifier la valeur pour correspondre au format demandé : texte sans chiffres.";
+        firstName.setCustomValidity("");
+        if (! firstName.checkValidity()) {
+            valid = false;
+            firstName.setCustomValidity(nameErrorMsg);
+        }
+        lastName.setCustomValidity("");
+        if (! lastName.checkValidity()) {
+            valid = false;
+            lastName.setCustomValidity(nameErrorMsg);
+        }
+        valid &= address.checkValidity();
+        valid &= city.checkValidity();
+        valid &= email.checkValidity();
+        document.getElementById("firstNameErrorMsg").innerHTML = firstName.validationMessage;
+        document.getElementById("lastNameErrorMsg").innerHTML = lastName.validationMessage;
+        document.getElementById("addressErrorMsg").innerHTML = address.validationMessage;
+        document.getElementById("cityErrorMsg").innerHTML = city.validationMessage;
+        document.getElementById("emailErrorMsg").innerHTML = email.validationMessage;
+        if (valid) {
+            await order(firstName.value, lastName.value, address.value, city.value, email.value);
+        }
+    });
+}
+
 // Global function
 async function main() {
     let cart = CartManager.getInstance();
@@ -112,6 +179,7 @@ async function main() {
     updateCartArticlesNumber(cart.getCartArticlesNumber());
     listenSpinnerInputs();
     listenDeleteButtons();
+    listenOrderButton();
 }
 
 main();
