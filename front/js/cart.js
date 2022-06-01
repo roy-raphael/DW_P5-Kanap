@@ -133,8 +133,10 @@ async function order(firstName, lastName, address, city, email) {
         body: `{"contact": ${JSON.stringify(contact)},
     "products": ${JSON.stringify(products)}}`
     });
-    // return <objet contact> <tableau produits> <orderId (string)>
+    // Returns <objet contact> <tableau produits> <orderId (string)>
     let responseJson = await response.json();
+    // Redirect to confirmation page
+    window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
 }
 
 // Add event listener on the order button
