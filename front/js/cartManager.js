@@ -7,11 +7,24 @@ export class CartItem {
 }
 
 export class CartManager {
-    cartArticlesNumber = 0;
-    cartItemsList = [];
+    // Attributes
+    #cartItemsList = [];
+    #cartArticlesNumber = 0;
+    #ProductsUnitaryPrices = new Map();
+    #ProductsTotalPrices = new Map();
+    static #instance = null;
+
+    // Static methods
+
+    static getInstance() {
+        if (CartManager.#instance === null) {
+            CartManager.#instance = new CartManager();
+        }
+        return CartManager.#instance;
+    }
 
     static getCart() {
-        let cart = localStorage.getItem("cart");
+        let cart = localStorage.getItem("cartItemsList");
         if (cart == null) {
             return [];
         } else {
@@ -19,18 +32,72 @@ export class CartManager {
         }
     }
 
+    // Constructor
+
     constructor () {
-        let jsonCart = CartManager.getCart();
-        jsonCart && Object.assign(this, jsonCart);
+        let jsonCartItemsList = CartManager.getCart();
+        jsonCartItemsList && Object.assign(this.#cartItemsList, jsonCartItemsList);
+        for (let cartItem of this.#cartItemsList) {
+            this.#cartArticlesNumber += cartItem.quantity;
+        }
     }
 
+    // Getters & Setters
+
+    cartItemsListSize() {
+        return this.#cartItemsList.length;
+    }
+
+    getCartItem(i) {
+        return Object.assign({}, this.#cartItemsList[i]);
+    }
+
+    getCartArticlesNumber() {
+        return this.#cartArticlesNumber;
+    }
+
+    async getProductUnitaryPrice(id) {
+        if (this.#ProductsUnitaryPrices.has(id))
+        {
+            return this.#ProductsUnitaryPrices.get(id);
+        } else {
+            let productJson = await import('./productManager.js')
+            .then(async ({getProduct}) => { return await getProduct(id); });
+            this.#ProductsUnitaryPrices.set(id, productJson.price);
+            return productJson.price;
+        }
+    }
+
+    setProductUnitaryPrice(id, price) {
+        this.#ProductsUnitaryPrices.set(id, price);
+    }
+
+    setProductTotalPrice(id, totalPrice) {
+        this.#ProductsTotalPrices.set(id, totalPrice);
+    }
+
+    getTotalPrice() {
+        let totalPrice = 0;
+        for (let subtotalPrice of this.#ProductsTotalPrices.values()) {
+            totalPrice += subtotalPrice;
+        }
+        return totalPrice;
+    }
+
+    // Other methods
+
     saveCart() {
-        localStorage.setItem("cart", JSON.stringify(this));
+        localStorage.setItem("cartItemsList", JSON.stringify(this.#cartItemsList));
+    }
+
+    endCartModification(quantityDifference) {
+        this.#cartArticlesNumber += quantityDifference;
+        this.saveCart();
     }
 
     add(product) {
         let productAdded = false;
-        for (let cartItem of this.cartItemsList) {
+        for (let cartItem of this.#cartItemsList) {
             if (cartItem.id === product.id && cartItem.color === product.color) {
                 cartItem.quantity += product.quantity;
                 productAdded = true;
@@ -38,20 +105,40 @@ export class CartManager {
             }
         }
         if (! productAdded) {
-            this.cartItemsList.push(product);
+            this.#cartItemsList.push(product);
         }
-        this.cartArticlesNumber += product.quantity;
-        this.saveCart();
+        this.endCartModification(product.quantity);
+    }
+
+    changeQuantity(product, newQuantity) {
+        let originalQuantity = product.quantity;
+        if (newQuantity === 0) {
+            this.delete(product, originalQuantity);
+        } else if (newQuantity !== originalQuantity) {
+            for (let cartItem of this.#cartItemsList) {
+                if (cartItem.id === product.id && cartItem.color === product.color) {
+                    cartItem.quantity = newQuantity;
+                    this.endCartModification(newQuantity - originalQuantity);
+                    return;
+                }
+            }
+        }
+    }
+
+    delete(product) {
+        this.#cartItemsList = this.#cartItemsList.filter(item => item.id !== product.id || item.color !== product.color);
+        this.endCartModification(-product.quantity);
     }
 }
 
-export function initCartProductsNumberIndicator() {
-    let cart = new CartManager();
-    updateCartProductsNumberIndicator(cart.cartArticlesNumber);
-}
-
+// Update the indicator for number of articles in the cart (in the nav bar)
 export function updateCartProductsNumberIndicator(productsNumber) {
     let navBar = document.getElementsByTagName("nav")[0];
     let cartElement = navBar.children[0].children[1].children[0];
     cartElement.textContent = "Panier (" + productsNumber + ")";
+}
+
+// Initialize the indicator for number of articles in the cart (in the nav bar)
+export function initCartProductsNumberIndicator() {
+    updateCartProductsNumberIndicator(CartManager.getInstance().getCartArticlesNumber());
 }
