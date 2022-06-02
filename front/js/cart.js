@@ -5,25 +5,25 @@ import {CartItem, CartManager, updateCartProductsNumberIndicator} from './cartMa
 function displayCartItem(cartItem, productJson) {
     let container = document.getElementById("cart__items");
     container.innerHTML += `<article class="cart__item" data-id="${cartItem.id}" data-color="${cartItem.color}">
-                            <div class="cart__item__img">
-                                <img src="${productJson.imageUrl}" alt="${productJson.altTxt}">
-                            </div>
-                            <div class="cart__item__content">
-                                <div class="cart__item__content__description">
-                                <h2>${productJson.name}</h2>
-                                <p>${cartItem.color}</p>
-                                <p>${(productJson.price/100).toLocaleString()} €</p>
+                                <div class="cart__item__img">
+                                    <img src="${productJson.imageUrl}" alt="${productJson.altTxt}">
                                 </div>
-                                <div class="cart__item__content__settings">
-                                <div class="cart__item__content__settings__quantity">
-                                    <p>Qté : </p>
-                                    <input type="number" class="itemQuantity" name="itemQuantity" min="0" max="100" value="${cartItem.quantity}">
+                                <div class="cart__item__content">
+                                    <div class="cart__item__content__description">
+                                        <h2>${productJson.name}</h2>
+                                        <p>${cartItem.color}</p>
+                                        <p>${(productJson.price/100).toLocaleString()} €</p>
+                                    </div>
+                                    <div class="cart__item__content__settings">
+                                        <div class="cart__item__content__settings__quantity">
+                                            <p>Qté : </p>
+                                            <input type="number" class="itemQuantity" name="itemQuantity" min="0" max="100" value="${cartItem.quantity}">
+                                        </div>
+                                        <div class="cart__item__content__settings__delete">
+                                            <p class="deleteItem">Supprimer</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="cart__item__content__settings__delete">
-                                    <p class="deleteItem">Supprimer</p>
-                                </div>
-                                </div>
-                            </div>
                             </article>`;
 }
 
@@ -105,7 +105,7 @@ function listenSpinnerInputs() {
     }
 }
 
-// Order the cart
+// Order the cart (using the API) and redirect to the confirmation page
 async function order(firstName, lastName, address, city, email) {
     // Objet contact : firstName, lastName, address, city et email
     let contact = {firstName: firstName,
@@ -139,7 +139,7 @@ async function order(firstName, lastName, address, city, email) {
     window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
 }
 
-// Add event listener on the order button
+// Add an event listener on the order button (check the inputs then order)
 function listenOrderButton(id) {
     document.getElementById("order").addEventListener('click', async function(event) {
         event.preventDefault();
@@ -174,7 +174,7 @@ function listenOrderButton(id) {
     });
 }
 
-// Global function
+// Global function (the one launched)
 async function main() {
     let cart = CartManager.getInstance();
     await displayCart();

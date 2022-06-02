@@ -1,6 +1,7 @@
 import {getProduct} from './productManager.js';
 import {CartItem, CartManager, initCartProductsNumberIndicator, updateCartProductsNumberIndicator} from './cartManager.js';
 
+// Retrieve the id of the product to display (using the URL)
 function getID() {
     let url = new URL(window.location.href);
     let search_params = new URLSearchParams(url.search);
@@ -12,6 +13,7 @@ function getID() {
     }
 }
 
+// Display the product on the page (fill some tag contents)
 function displayProduct(productJson) {
     // Image
     let imageItem = document.createElement("img");
@@ -33,6 +35,8 @@ function displayProduct(productJson) {
     }
 }
 
+// Add an event listener to the button that adds the product to the cart
+// (checks the inputs and add the product to the cart)
 function listenAddToCartButton(id) {
     document.getElementById("addToCart").addEventListener('click', function(event) {
         event.preventDefault();
@@ -54,6 +58,7 @@ function listenAddToCartButton(id) {
     });
 }
 
+// Global function (the one launched)
 async function main() {
     initCartProductsNumberIndicator();
     let id = getID();

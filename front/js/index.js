@@ -1,5 +1,6 @@
 import {initCartProductsNumberIndicator} from './cartManager.js';
 
+// Retrieve the list of products (and their data) using the API
 async function getProducts() {
     let host = "http://localhost:3000";
     let response = await fetch(host + "/api/products");
@@ -7,15 +8,16 @@ async function getProducts() {
     return productsListJson;
 }
 
+// Display the list of the products on the page (add an article per product)
 function displayProductsList(productsListJson) {
     let container = document.getElementById("items");
     for (let product of productsListJson) {
         container.innerHTML += `<a href="./product.html?id=${product._id}">
                                     <article>
-                                    <img src="${product.imageUrl}" alt="${product.altTxt}">
-                                    <h3 class="productName">${product.name}</h3>
-                                    <p class="productPrice">${(product.price/100).toLocaleString()}€</p>
-                                    <p class="productDescription">${product.description}</p>
+                                        <img src="${product.imageUrl}" alt="${product.altTxt}">
+                                        <h3 class="productName">${product.name}</h3>
+                                        <p class="productPrice">${(product.price/100).toLocaleString()}€</p>
+                                        <p class="productDescription">${product.description}</p>
                                     </article>
                                 </a>`;
     }
@@ -26,10 +28,11 @@ function displayProductsList(productsListJson) {
     }
 }
 
-async function displayProducts() {
+// Global function (the one launched)
+function main() {
+    initCartProductsNumberIndicator();
     let productsListJson = await getProducts();
     displayProductsList(productsListJson);
 }
 
-initCartProductsNumberIndicator();
-displayProducts();
+main();

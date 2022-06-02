@@ -1,5 +1,6 @@
 import {initCartProductsNumberIndicator} from './cartManager.js';
 
+// Retrieve the order id (using the URL)
 function getOrderID() {
     let url = new URL(window.location.href);
     let search_params = new URLSearchParams(url.search);
@@ -11,6 +12,7 @@ function getOrderID() {
     }
 }
 
+// Global function (the one launched)
 function main() {
     initCartProductsNumberIndicator();
     document.getElementById("orderId").textContent = getOrderID();
