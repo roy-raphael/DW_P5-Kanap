@@ -7,7 +7,7 @@ function getID() {
     if (search_params.has('id')) {
         return search_params.get("id");
     } else {
-        // LOG ERROR
+        console.error("URL does not have an id parameter");
         return "";
     }
 }

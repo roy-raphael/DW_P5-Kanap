@@ -6,7 +6,7 @@ function getOrderID() {
     if (search_params.has('orderId')) {
         return search_params.get("orderId");
     } else {
-        // LOG ERROR
+        console.error("URL does not have an orderId parameter");
         return "";
     }
 }

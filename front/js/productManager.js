@@ -5,7 +5,7 @@ export async function getProduct(id) {
         let productJson = response.json();
         return productJson;
     } else {
-        // LOG ERROR
+        console.error("productManager:getProduct(id) : the id parameter is empty");
         return {};
     }
 }
