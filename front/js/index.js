@@ -29,7 +29,7 @@ function displayProductsList(productsListJson) {
 }
 
 // Global function (the one launched)
-function main() {
+async function main() {
     initCartProductsNumberIndicator();
     let productsListJson = await getProducts();
     displayProductsList(productsListJson);
