@@ -3,9 +3,15 @@ import {initCartProductsNumberIndicator} from './cartManager.js';
 
 // Retrieve the list of products (and their data) using the API
 async function getProducts() {
+    let productsListJson = [];
     let config = await Config.getInstance();
-    let response = await fetch(config.getHost() + "/api/products");
-    let productsListJson = response.json();
+    let apiAdress = config.getHost() + "/api/products";
+    try {
+        let response = await fetch(apiAdress);
+        productsListJson = response.json();
+    } catch (error) {
+        alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)");
+    }
     return productsListJson;
 }
 

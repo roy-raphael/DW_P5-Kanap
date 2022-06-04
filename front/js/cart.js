@@ -33,11 +33,20 @@ async function displayCart() {
     let cart = CartManager.getInstance();
     for (let i = 0; i < cart.cartItemsListSize(); i++) {
         let cartItem = cart.getCartItem(i);
-        let productJson = await getProduct(cartItem.id);
-        displayCartItem(cartItem, productJson);
-        // Set unitary price and subtotal price (unitary price * quantity) of the article
-        cart.setProductUnitaryPrice(cartItem.id, productJson.price);
-        cart.setProductTotalPrice(cartItem.id + cartItem.color, productJson.price * cartItem.quantity);
+        let productJson = {};
+        try {
+            productJson = await getProduct(cartItem.id);
+        } catch (error) {
+            console.error("cart:displayCart() : API request failure (maybe the backend is down), so we stop here the display of the cart");
+            return;
+        }
+        if (Object.keys(productJson).length !== 0) {
+        // if (Object.getPrototypeOf(productJson) !== Object.prototype) {
+            displayCartItem(cartItem, productJson);
+            // Set unitary price and subtotal price (unitary price * quantity) of the article
+            cart.setProductUnitaryPrice(cartItem.id, productJson.price);
+            cart.setProductTotalPrice(cartItem.id + cartItem.color, productJson.price * cartItem.quantity);
+        }
     }
     // Display total price
     document.getElementById("totalPrice").textContent = (cart.getTotalPrice()/100).toLocaleString();
@@ -125,9 +134,9 @@ async function order(firstName, lastName, address, city, email) {
         let cartItem = cart.getCartItem(i);
         products.push(cartItem.id);
     }
-    
-    // POST /order <objet contact> <tableau produits>
-    let response = await fetch(config.getHost() + "/api/products/order", {
+
+    let apiAdress = config.getHost() + "/api/products/order";
+    fetch(apiAdress, {
         method: "POST",
         headers: {
             'Accept' : 'application/json',
@@ -135,11 +144,12 @@ async function order(firstName, lastName, address, city, email) {
         },
         body: `{"contact": ${JSON.stringify(contact)},
     "products": ${JSON.stringify(products)}}`
-    });
-    // Returns <objet contact> <tableau produits> <orderId (string)>
-    let responseJson = await response.json(); // HACK : await necessary to have a correct response...
-    // Redirect to confirmation page
-    window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
+    })
+    .then(async function(response) {
+        let responseJson = await response.json(); // HACK : await necessary to have a correct response...
+        window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
+    })
+    .catch(error => alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)"));
 }
 
 // Add an event listener on the order button (check the inputs then order)
