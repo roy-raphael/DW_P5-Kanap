@@ -63,10 +63,16 @@ async function main() {
     initCartProductsNumberIndicator();
     let id = getID();
     if (id == "") {
-        // LOG ERROR
+        console.error("product:main() : the retrieved id is empty");
         return;
     }
-    let productJson = await getProduct(id);
+    let productJson = {};
+    try {
+        productJson = await getProduct(id);
+    } catch (error) {
+        console.error("product:main() : API request failure (maybe the backend is down), so we stop here the display of the product");
+        return;
+    }
     displayProduct(productJson);
     listenAddToCartButton(id);
 }

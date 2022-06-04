@@ -63,10 +63,22 @@ export class CartManager {
         {
             return this.#ProductsUnitaryPrices.get(id);
         } else {
+            let unitaryPrice = 0;
             let productJson = await import('./productManager.js')
-            .then(async ({getProduct}) => { return await getProduct(id); });
-            this.#ProductsUnitaryPrices.set(id, productJson.price);
-            return productJson.price;
+            .then(async ({getProduct}) => {
+                let productJson = {};
+                try {
+                    productJson = await getProduct(id);
+                } catch (error) {
+                    console.error("cartManager:getProductUnitaryPrice() : API request failure (maybe the backend is down)");
+                }
+                return productJson;
+            });
+            if (Object.keys(productJson).length !== 0) {
+                this.#ProductsUnitaryPrices.set(id, productJson.price);
+                unitaryPrice = productJson.price;
+            }
+            return unitaryPrice;
         }
     }
 
