@@ -1,3 +1,4 @@
+import {Config} from './config.js';
 import {getProduct} from './productManager.js';
 import {CartItem, CartManager, updateCartProductsNumberIndicator} from './cartManager.js';
 
@@ -107,6 +108,9 @@ function listenSpinnerInputs() {
 
 // Order the cart (using the API) and redirect to the confirmation page
 async function order(firstName, lastName, address, city, email) {
+    // Retrieve config
+    let config = await Config.getInstance();
+
     // Objet contact : firstName, lastName, address, city et email
     let contact = {firstName: firstName,
         lastName: lastName,
@@ -123,8 +127,7 @@ async function order(firstName, lastName, address, city, email) {
     }
     
     // POST /order <objet contact> <tableau produits>
-    let host = "http://localhost:3000";
-    let response = await fetch(host + "/api/products/order", {
+    let response = await fetch(config.getHost() + "/api/products/order", {
         method: "POST",
         headers: {
             'Accept' : 'application/json',
@@ -134,13 +137,13 @@ async function order(firstName, lastName, address, city, email) {
     "products": ${JSON.stringify(products)}}`
     });
     // Returns <objet contact> <tableau produits> <orderId (string)>
-    let responseJson = await response.json();
+    let responseJson = await response.json(); // HACK : await necessary to have a correct response...
     // Redirect to confirmation page
     window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
 }
 
 // Add an event listener on the order button (check the inputs then order)
-function listenOrderButton(id) {
+function listenOrderButton() {
     document.getElementById("order").addEventListener('click', async function(event) {
         event.preventDefault();
         let firstName = document.getElementById("firstName");

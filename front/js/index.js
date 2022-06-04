@@ -1,9 +1,10 @@
+import {Config} from './config.js';
 import {initCartProductsNumberIndicator} from './cartManager.js';
 
 // Retrieve the list of products (and their data) using the API
 async function getProducts() {
-    let host = "http://localhost:3000";
-    let response = await fetch(host + "/api/products");
+    let config = await Config.getInstance();
+    let response = await fetch(config.getHost() + "/api/products");
     let productsListJson = response.json();
     return productsListJson;
 }
