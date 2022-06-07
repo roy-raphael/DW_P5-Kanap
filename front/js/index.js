@@ -8,7 +8,7 @@ async function getProducts() {
     let apiAdress = config.getHost() + "/api/products";
     try {
         let response = await fetch(apiAdress);
-        productsListJson = response.json();
+        productsListJson = await response.json();
     } catch (error) {
         alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)");
     }

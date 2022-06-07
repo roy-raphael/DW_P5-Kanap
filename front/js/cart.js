@@ -136,20 +136,23 @@ async function order(firstName, lastName, address, city, email) {
     }
 
     let apiAdress = config.getHost() + "/api/products/order";
-    fetch(apiAdress, {
-        method: "POST",
-        headers: {
-            'Accept' : 'application/json',
-            'Content-Type' : 'application/json'
-        },
-        body: `{"contact": ${JSON.stringify(contact)},
-    "products": ${JSON.stringify(products)}}`
-    })
-    .then(async function(response) {
-        let responseJson = await response.json(); // HACK : await necessary to have a correct response...
+        
+    try {
+        let response = await fetch(apiAdress, {
+            method: "POST",
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body: `{"contact": ${JSON.stringify(contact)},
+            "products": ${JSON.stringify(products)}}`
+        });
+        let responseJson = await response.json();
         window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
-    })
-    .catch(error => alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)"));
+    } catch (error) {
+        alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)");
+        throw error;
+    }
 }
 
 // Add an event listener on the order button (check the inputs then order)
