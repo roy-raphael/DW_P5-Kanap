@@ -23,7 +23,7 @@ function displayProductsList(productsListJson) {
                                     <article>
                                         <img src="${product.imageUrl}" alt="${product.altTxt}">
                                         <h3 class="productName">${product.name}</h3>
-                                        <p class="productPrice">${(product.price/100).toLocaleString()}€</p>
+                                        <p class="productPrice">${product.price}€</p>
                                         <p class="productDescription">${product.description}</p>
                                     </article>
                                 </a>`;

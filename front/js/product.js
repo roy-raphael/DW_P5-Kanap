@@ -22,7 +22,7 @@ function displayProduct(productJson) {
     document.getElementsByClassName("item__img")[0].appendChild(imageItem);
     // Contenu
     document.getElementById("title").textContent = productJson.name;
-    document.getElementById("price").textContent = (productJson.price/100).toLocaleString();
+    document.getElementById("price").textContent = productJson.price;
     // Description
     document.getElementById("description").textContent = productJson.description;
     // Options

@@ -13,7 +13,7 @@ function displayCartItem(cartItem, productJson) {
                                     <div class="cart__item__content__description">
                                         <h2>${productJson.name}</h2>
                                         <p>${cartItem.color}</p>
-                                        <p>${(productJson.price/100).toLocaleString()} €</p>
+                                        <p>${productJson.price} €</p>
                                     </div>
                                     <div class="cart__item__content__settings">
                                         <div class="cart__item__content__settings__quantity">
@@ -49,7 +49,7 @@ async function displayCart() {
         }
     }
     // Display total price
-    document.getElementById("totalPrice").textContent = (cart.getTotalPrice()/100).toLocaleString();
+    document.getElementById("totalPrice").textContent = cart.getTotalPrice();
 }
 
 // Update the number of articles in the cart (in the nav bar & at the end of the summary)
@@ -63,7 +63,7 @@ async function updateCartTotalPrice(id, color, newQuantity) {
     let cart = CartManager.getInstance();
     let productPrice = await cart.getProductUnitaryPrice(id);
     cart.setProductTotalPrice(id + color, productPrice * newQuantity);
-    document.getElementById("totalPrice").textContent = (cart.getTotalPrice()/100).toLocaleString();
+    document.getElementById("totalPrice").textContent = cart.getTotalPrice();
 }
 
 // Update the quantity of an article :
