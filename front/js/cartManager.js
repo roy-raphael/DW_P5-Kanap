@@ -10,8 +10,8 @@ export class CartManager {
     // Attributes
     #cartItemsList = [];
     #cartArticlesNumber = 0;
-    #ProductsUnitaryPrices = new Map();
-    #ProductsTotalPrices = new Map();
+    #productsUnitaryPrices = new Map();
+    #productsTotalPrices = new Map();
     static #instance = null;
 
     // Static method : returns the only instance of this class (and create it if it does not exist)
@@ -59,9 +59,9 @@ export class CartManager {
     // Getter/Setter : gets the unitary price of a product
     // (using a list if already retrieved, else retrieve it using the API)
     async getProductUnitaryPrice(id) {
-        if (this.#ProductsUnitaryPrices.has(id))
+        if (this.#productsUnitaryPrices.has(id))
         {
-            return this.#ProductsUnitaryPrices.get(id);
+            return this.#productsUnitaryPrices.get(id);
         } else {
             let unitaryPrice = 0;
             let productJson = {};
@@ -72,7 +72,7 @@ export class CartManager {
                 console.error("cartManager:getProductUnitaryPrice() : API request failure (maybe the backend is down)");
             }
             if (Object.keys(productJson).length !== 0) {
-                this.#ProductsUnitaryPrices.set(id, productJson.price);
+                this.#productsUnitaryPrices.set(id, productJson.price);
                 unitaryPrice = productJson.price;
             }
             return unitaryPrice;
@@ -81,18 +81,18 @@ export class CartManager {
 
     // Getter/Setter : sets the unitary price of a product (store it in a list)
     setProductUnitaryPrice(id, price) {
-        this.#ProductsUnitaryPrices.set(id, price);
+        this.#productsUnitaryPrices.set(id, price);
     }
 
     // Getter/Setter : sets the subtotal price of products (a product * its quantity)
     setProductTotalPrice(id, totalPrice) {
-        this.#ProductsTotalPrices.set(id, totalPrice);
+        this.#productsTotalPrices.set(id, totalPrice);
     }
 
     // Getter/Setter : gets the total price of the cart
     getTotalPrice() {
         let totalPrice = 0;
-        for (let subtotalPrice of this.#ProductsTotalPrices.values()) {
+        for (let subtotalPrice of this.#productsTotalPrices.values()) {
             totalPrice += subtotalPrice;
         }
         return totalPrice;
@@ -145,7 +145,7 @@ export class CartManager {
     // Empty the cart
     clear() {
         this.#cartItemsList.length = 0;
-        this.#ProductsTotalPrices.length = 0;
+        this.#productsTotalPrices.length = 0;
         this.#cartArticlesNumber = 0;
         localStorage.removeItem("cartItemsList");
     }
