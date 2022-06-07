@@ -141,6 +141,14 @@ export class CartManager {
         this.#cartItemsList = this.#cartItemsList.filter(item => item.id !== product.id || item.color !== product.color);
         this.endCartModification(-product.quantity);
     }
+
+    // Empty the cart
+    clear() {
+        this.#cartItemsList.length = 0;
+        this.#ProductsTotalPrices.length = 0;
+        this.#cartArticlesNumber = 0;
+        localStorage.removeItem("cartItemsList");
+    }
 }
 
 // Update the indicator for number of articles in the cart (in the nav bar)

@@ -148,6 +148,7 @@ async function order(firstName, lastName, address, city, email) {
             "products": ${JSON.stringify(products)}}`
         });
         let responseJson = await response.json();
+        cart.clear();
         window.location.href = "./confirmation.html?orderId=" + responseJson.orderId;
     } catch (error) {
         alert("Erreur : échec de la requête d'API sur " + apiAdress + " (le serveur est peut-être hors-ligne)");
